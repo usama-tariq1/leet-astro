@@ -33,7 +33,7 @@ var createCmd = &cobra.Command{
 			return
 		}
 
-		fileTypes := []string{"controller", "model"}
+		fileTypes := []string{"controller", "model", "router"}
 
 		if helper.Constains(fileType, fileTypes) {
 			if fileType == "controller" {
@@ -41,6 +41,8 @@ var createCmd = &cobra.Command{
 				artisan.CreateController(name)
 			} else if fileType == "model" {
 				artisan.CreateModel(name)
+			} else if fileType == "router" {
+				artisan.CreateRouter(name)
 			}
 
 		} else {
