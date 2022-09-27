@@ -35,7 +35,7 @@ var createCmd = &cobra.Command{
 
 		fileTypes := []string{"controller", "model", "router"}
 
-		if helper.Constains(fileType, fileTypes) {
+		if helper.Contains(fileType, fileTypes) {
 			if fileType == "controller" {
 				// console.Log("Info", "Controller created As "+name)
 				artisan.CreateController(name)

@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func Constains(pin string, heystack []string) bool {
+func Contains(pin string, heystack []string) bool {
 	for _, b := range heystack {
 		if b == pin {
 			return true
