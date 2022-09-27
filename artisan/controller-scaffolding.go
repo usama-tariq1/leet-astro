@@ -2,10 +2,12 @@ package artisan
 
 import (
 	"bytes"
+	"fmt"
 	"go/format"
 	"html/template"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/usama-tariq1/leet-astro/helper"
 )
@@ -18,16 +20,21 @@ type DataController struct {
 func CreateController(name string) {
 	var console = helper.Console{}
 
+	fileSrc := strings.Split(name, "/")
+	fileSrcPath := strings.Join(fileSrc, `\`)
+
 	path := helper.GetWD()
 	modName := helper.GetModuleName(path + `\go.mod`)
 	data := DataController{
-		Name:    name,
-		ModName: modName + `/models`,
+		Name:    fileSrc[len(fileSrc)-1],
+		ModName: modName,
 	}
 
-	fileExist := helper.FileExist(path + `\controllers\` + name + `.go`)
+	fmt.Println(fileSrc[len(fileSrc)-1])
+
+	fileExist := helper.FileExist(path + `\controllers\` + fileSrcPath + `.go`)
 	if fileExist {
-		console.Log("Error", name+" Already Exist!")
+		console.Log("Error", fileSrcPath+" Already Exist!")
 		return
 	}
 
@@ -46,10 +53,9 @@ func CreateController(name string) {
 	if err != nil {
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
-
-	file, _ := os.Create(path + `\controllers\` + name + `.go`)
+	file, _ := os.Create(path + `\controllers\` + fileSrcPath + `.go`)
 	file.Write(formatted)
 
-	console.Log("Success", name+" Created Successfully")
+	console.Log("Success", fileSrcPath+" Created Successfully")
 
 }
