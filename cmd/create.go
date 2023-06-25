@@ -1,6 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -11,8 +8,6 @@ import (
 	"github.com/usama-tariq1/leet-astro/helper"
 )
 
-var console = helper.Console{}
-
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
@@ -22,13 +17,14 @@ var createCmd = &cobra.Command{
 
 		var fileType string
 		var name string
+
 		if len(args) < 2 {
 			fileType = args[0]
 		} else if len(args) >= 2 {
 			fileType = args[0]
 			name = args[1]
 		} else {
-			console.Log("Error", "Create require two args Type and Name ")
+			console.Log("Error", "Create requires two arguments: Type and Name")
 			console.Log("Error", "Example: leet-astro create controller UserController")
 			return
 		}
@@ -37,8 +33,12 @@ var createCmd = &cobra.Command{
 
 		if helper.Contains(fileType, fileTypes) {
 			if fileType == "controller" {
-				// console.Log("Info", "Controller created As "+name)
-				artisan.CreateController(name)
+				modelName, _ := cmd.Flags().GetString("model")
+				if modelName == "" {
+					artisan.CreateController(name)
+				} else {
+					artisan.CreateResourceController(name, modelName)
+				}
 			} else if fileType == "model" {
 				artisan.CreateModel(name)
 			} else if fileType == "router" {
@@ -46,9 +46,9 @@ var createCmd = &cobra.Command{
 			}
 
 		} else {
-			console.Log("Error", "Unknown Command for create ")
-			console.Log("Info", "possible terms are :")
-			console.Log("Info", strings.Join(fileTypes, " , "))
+			console.Log("Error", "Unknown command for create")
+			console.Log("Info", "Possible terms are:")
+			console.Log("Info", strings.Join(fileTypes, ", "))
 			return
 		}
 
@@ -66,5 +66,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	createCmd.Flags().String("model", "", "Model name for creating a controller")
 }
