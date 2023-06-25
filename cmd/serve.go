@@ -5,7 +5,8 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
+	"os"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 	"github.com/usama-tariq1/leet-astro/helper"
@@ -19,24 +20,22 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var console = helper.Console{}
 
+		console.Log("Info", "Starting Engine")
+
 		path := helper.GetWD()
 
-		// f := utils.DocValue(path)
-		// router := gin.Default()
-
-		// s := &http.Server{
-		// 	Addr:           ":8080",
-		// 	Handler:        router,
-		// 	ReadTimeout:    10 * time.Second,
-		// 	WriteTimeout:   10 * time.Second,
-		// 	MaxHeaderBytes: 1 << 20,
-		// }
-		// s.ListenAndServe()
-		err := http.ListenAndServe("localhost:8080", http.FileServer(http.Dir(path)))
+		// Execute "go run main.go" command in the working directory
+		runCmd := exec.Command("go", "run", "main.go")
+		runCmd.Stdout = os.Stdout
+		runCmd.Stderr = os.Stderr
+		runCmd.Dir = path
+		err := runCmd.Run()
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Println("Failed to run 'go run main.go' command:", err)
+			return
 		}
-		console.Log("Success", "Router started")
+
+		console.Log("Success", "Application started")
 	},
 }
 

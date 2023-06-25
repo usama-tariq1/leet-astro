@@ -8,7 +8,10 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/usama-tariq1/leet-astro/ConsoleDisplay"
+	"github.com/usama-tariq1/leet-astro/helper"
 )
+
+var console = helper.Console{}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

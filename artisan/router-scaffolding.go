@@ -11,15 +11,18 @@ import (
 )
 
 type DataRouter struct {
-	Name string
+	Name    string
+	ModName string
 }
 
 func CreateRouter(name string) {
 	var console = helper.Console{}
 
 	path := helper.GetWD()
-	data := DataController{
-		Name: name,
+	modName := helper.GetModuleName(path + `\go.mod`)
+	data := DataRouter{
+		ModName: modName,
+		Name:    name,
 	}
 
 	fileExist := helper.FileExist(path + `\routers\` + name + `.go`)
