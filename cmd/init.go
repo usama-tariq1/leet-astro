@@ -14,13 +14,16 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init [ProjectName]",
+	Use:   "init [ProjectName] [Mod]",
 	Short: "Create project scaffolding",
 	Long:  ``,
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		projectName := args[0]
-
+		mod := "github.com/user"
+		if len(args) > 1 {
+			mod = args[1]
+		}
 		// Create a new folder with the given project name
 		err := os.Mkdir(projectName, 0755)
 		if err != nil {
@@ -43,6 +46,17 @@ var initCmd = &cobra.Command{
 		err = clonecmd.Run()
 		if err != nil {
 			fmt.Println("Failed to pull GitHub branch:", err)
+			return
+		}
+
+		// Modify the module name in go.mod
+		moduleName := fmt.Sprintf("%s/%s", mod, projectName)
+		modCmd := exec.Command("go", "mod", "edit", "-module", moduleName)
+		modCmd.Stdout = os.Stdout
+		modCmd.Stderr = os.Stderr
+		err = modCmd.Run()
+		if err != nil {
+			fmt.Println("Failed to modify module name:", err)
 			return
 		}
 
