@@ -10,29 +10,29 @@ import (
 	"github.com/usama-tariq1/leet-astro/helper"
 )
 
-type DataModel struct {
+type DataMiddleware struct {
 	Name    string
 	ModName string
 }
 
-func CreateModel(name string, shouldCreateController bool, shouldCreateRouter bool) {
+func CreateMiddleware(name string) {
 	var console = helper.Console{}
 
 	path := helper.GetWD()
 	modName := helper.GetModuleName(path + `\go.mod`)
 
-	data := DataModel{
+	data := DataMiddleware{
 		Name:    name,
 		ModName: modName,
 	}
 
-	fileExist := helper.FileExist(path + `\models\` + name + `.go`)
+	fileExist := helper.FileExist(path + `\middlewares\` + name + `.go`)
 	if fileExist {
 		console.Log("Error", name+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\ModelTemplate.tmpl`)
+	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\MiddlewareTemplate.tmpl`)
 	if err != nil {
 		log.Print(err)
 		return
@@ -48,17 +48,9 @@ func CreateModel(name string, shouldCreateController bool, shouldCreateRouter bo
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
 
-	file, _ := os.Create(path + `\models\` + name + `.go`)
+	file, _ := os.Create(path + `\middlewares\` + name + `.go`)
 	file.Write(formatted)
 
 	console.Log("Success", name+" Created Successfully")
-
-	if shouldCreateController {
-		CreateResourceController(name+`Controller`, name)
-	}
-
-	if shouldCreateRouter {
-		CreateRouterWithController(name+`Router`, name+`Controller`)
-	}
 
 }

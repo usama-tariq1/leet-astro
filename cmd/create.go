@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -10,7 +11,7 @@ import (
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create [controller | model | router | middleware] [Name]",
 	Short: "Create controller or model scaffolding",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -29,7 +30,7 @@ var createCmd = &cobra.Command{
 			return
 		}
 
-		fileTypes := []string{"controller", "model", "router"}
+		fileTypes := []string{"controller", "model", "router", "middleware"}
 
 		if helper.Contains(fileType, fileTypes) {
 			if fileType == "controller" {
@@ -40,9 +41,44 @@ var createCmd = &cobra.Command{
 					artisan.CreateResourceController(name, modelName)
 				}
 			} else if fileType == "model" {
-				artisan.CreateModel(name)
+
+				createController, _ := cmd.Flags().GetString("controller")
+				createRouter, _ := cmd.Flags().GetString("router")
+
+				if createController == "" {
+					createController = "false"
+				}
+				if createRouter == "" {
+					createRouter = "false"
+				}
+
+				shouldCreateController, err := strconv.ParseBool(createController)
+				if err != nil {
+					console.Log("Error", "Something Wrong happend")
+					return
+				}
+				shouldCreateRouter, err := strconv.ParseBool(createRouter)
+				if err != nil {
+					console.Log("Error", "Something Wrong happend")
+					return
+				}
+
+				if shouldCreateController || shouldCreateRouter {
+					artisan.CreateModel(name, shouldCreateController, shouldCreateRouter)
+				} else {
+					artisan.CreateModel(name, false, false)
+
+				}
 			} else if fileType == "router" {
-				artisan.CreateRouter(name)
+				controller, _ := cmd.Flags().GetString("controller")
+				if controller == "" {
+					artisan.CreateRouter(name)
+				} else {
+					artisan.CreateRouterWithController(name, controller)
+
+				}
+			} else if fileType == "middleware" {
+				artisan.CreateMiddleware(name)
 			}
 
 		} else {
@@ -67,4 +103,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	createCmd.Flags().String("model", "", "Model name for creating a controller")
+	createCmd.Flags().String("controller", "", "Controller name for router connection")
+	createCmd.Flags().String("router", "", "")
 }
