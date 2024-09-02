@@ -73,7 +73,7 @@ func CreateRouterWithController(name string, controllerName string) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `RouterWithControllerTemplate.tmpl`))
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `RouterTemplateWithController.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
