@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/usama-tariq1/leet-astro/helper"
 )
@@ -20,19 +21,19 @@ func CreateRouter(name string) {
 	var console = helper.Console{}
 
 	path := helper.GetWD()
-	modName := helper.GetModuleName(path + `\go.mod`)
+	modName := helper.GetModuleName(filepath.Join(path, `go.mod`))
 	data := DataRouter{
 		ModName: modName,
 		Name:    name,
 	}
 
-	fileExist := helper.FileExist(path + `\routers\` + name + `.go`)
+	fileExist := helper.FileExist(filepath.Join(path, `routers`, name+`.go`))
 	if fileExist {
 		console.Log("Error", name+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\RouterTemplate.tmpl`)
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `RouterTemplate.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
@@ -48,7 +49,7 @@ func CreateRouter(name string) {
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
 
-	file, _ := os.Create(path + `\routers\` + name + `.go`)
+	file, _ := os.Create(filepath.Join(path, `routers`, name+`.go`))
 	file.Write(formatted)
 
 	console.Log("Success", name+" Created Successfully")
@@ -59,20 +60,20 @@ func CreateRouterWithController(name string, controllerName string) {
 	var console = helper.Console{}
 
 	path := helper.GetWD()
-	modName := helper.GetModuleName(path + `\go.mod`)
+	modName := helper.GetModuleName(filepath.Join(path, `go.mod`))
 	data := DataRouter{
 		ModName:        modName,
 		Name:           name,
 		ControllerName: controllerName,
 	}
 
-	fileExist := helper.FileExist(path + `\routers\` + name + `.go`)
+	fileExist := helper.FileExist(filepath.Join(path, `routers`, name+`.go`))
 	if fileExist {
 		console.Log("Error", name+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\RouterTemplateWithController.tmpl`)
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `RouterWithControllerTemplate.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
@@ -88,7 +89,7 @@ func CreateRouterWithController(name string, controllerName string) {
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
 
-	file, _ := os.Create(path + `\routers\` + name + `.go`)
+	file, _ := os.Create(filepath.Join(path, `routers`, name+`.go`))
 	file.Write(formatted)
 
 	console.Log("Success", name+" Created Successfully")

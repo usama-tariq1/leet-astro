@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/usama-tariq1/leet-astro/helper"
 )
@@ -19,20 +20,20 @@ func CreateModel(name string, shouldCreateController bool, shouldCreateRouter bo
 	var console = helper.Console{}
 
 	path := helper.GetWD()
-	modName := helper.GetModuleName(path + `\go.mod`)
+	modName := helper.GetModuleName(filepath.Join(path, `go.mod`))
 
 	data := DataModel{
 		Name:    name,
 		ModName: modName,
 	}
 
-	fileExist := helper.FileExist(path + `\models\` + name + `.go`)
+	fileExist := helper.FileExist(filepath.Join(path, `models`, name+`.go`))
 	if fileExist {
 		console.Log("Error", name+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\ModelTemplate.tmpl`)
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `ModelTemplate.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
@@ -48,7 +49,7 @@ func CreateModel(name string, shouldCreateController bool, shouldCreateRouter bo
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
 
-	file, _ := os.Create(path + `\models\` + name + `.go`)
+	file, _ := os.Create(filepath.Join(path, `models`, name+`.go`))
 	file.Write(formatted)
 
 	console.Log("Success", name+" Created Successfully")

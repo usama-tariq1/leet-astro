@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/usama-tariq1/leet-astro/helper"
@@ -25,7 +26,7 @@ func CreateController(name string) {
 	fileSrcPath := strings.Join(fileSrc, `\`)
 
 	path := helper.GetWD()
-	modName := helper.GetModuleName(path + `\go.mod`)
+	modName := helper.GetModuleName(filepath.Join(path, `go.mod`))
 	data := DataController{
 		Name:    fileSrc[len(fileSrc)-1],
 		ModName: modName,
@@ -33,13 +34,13 @@ func CreateController(name string) {
 
 	fmt.Println(fileSrc[len(fileSrc)-1])
 
-	fileExist := helper.FileExist(path + `\controllers\` + fileSrcPath + `.go`)
+	fileExist := helper.FileExist(filepath.Join(path, `controllers`, filepath.Clean(fileSrcPath)+`.go`))
 	if fileExist {
 		console.Log("Error", fileSrcPath+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\ControllerTemplate.tmpl`)
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `ControllerTemplate.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
@@ -54,7 +55,7 @@ func CreateController(name string) {
 	if err != nil {
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
-	file, _ := os.Create(path + `\controllers\` + fileSrcPath + `.go`)
+	file, _ := os.Create(filepath.Join(path, `controllers`, fileSrcPath+".go"))
 	file.Write(formatted)
 
 	console.Log("Success", fileSrcPath+" Created Successfully")
@@ -68,7 +69,7 @@ func CreateResourceController(ControllerName string, ModelName string) {
 	fileSrcPath := strings.Join(fileSrc, `\`)
 
 	path := helper.GetWD()
-	modName := helper.GetModuleName(path + `\go.mod`)
+	modName := helper.GetModuleName(filepath.Join(path, `go.mod`))
 	data := DataController{
 		Name:      fileSrc[len(fileSrc)-1],
 		ModName:   modName,
@@ -77,13 +78,13 @@ func CreateResourceController(ControllerName string, ModelName string) {
 
 	fmt.Println(fileSrc[len(fileSrc)-1])
 
-	fileExist := helper.FileExist(path + `\controllers\` + fileSrcPath + `.go`)
+	fileExist := helper.FileExist(filepath.Join(path, `controllers`, filepath.Clean(fileSrcPath)+`.go`))
 	if fileExist {
 		console.Log("Error", fileSrcPath+" Already Exist!")
 		return
 	}
 
-	tmpl, err := template.ParseFiles(path + `\leet-gin\templates\ResourceControllerTemplate.tmpl`)
+	tmpl, err := template.ParseFiles(filepath.Join(path, `leet-gin`, `templates`, `ResourceControllerTemplate.tmpl`))
 	if err != nil {
 		log.Print(err)
 		return
@@ -98,7 +99,7 @@ func CreateResourceController(ControllerName string, ModelName string) {
 	if err != nil {
 		log.Fatalf("Could not format processed template: %v\n", err)
 	}
-	file, _ := os.Create(path + `\controllers\` + fileSrcPath + `.go`)
+	file, _ := os.Create(filepath.Join(path, `controllers`, fileSrcPath+".go"))
 	file.Write(formatted)
 
 	console.Log("Success", fileSrcPath+" Created Successfully")
